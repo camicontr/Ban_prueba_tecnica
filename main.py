@@ -52,18 +52,22 @@ def prediction_model():
     # Leer el conjunto de datos para predicciones
     oot_data = pd.read_csv('data/prueba_op_base_pivot_var_rpta_alt_enmascarado_oot.csv')
     df = pd.read_csv('data_processed/processed_data.csv')
-    
+    df = df.drop_duplicates(subset=['nit_enmascarado', 'num_oblig_orig_enmascarado', 'num_oblig_enmascarado'])
+
     oot_data_merged = oot_data.merge(df, on=['nit_enmascarado', 'num_oblig_orig_enmascarado', 'num_oblig_enmascarado'], how='left')
-    
+
     # Realizar predicciones
     df_predictions = oot_data_merged[['min_mora', 'vlr_obligacion', 'endeudamiento', 'promesas_cumplidas', 'rpc', 'pago_mes', 'banca_index', 'segmento_index', 'producto_index', 'alternativa_aplicada_agr_index', 'marca_alternativa_index', 'cant_acuerdo_binario_index', 'cant_alter_posibles_index', 'tipo_vivienda_index', 'tot_patrimonio', 'egresos_mes', 'total_ing', 'tot_activos', 'tot_pasivos', 'personas_dependientes']]
     predictions = predict_model(final_et, data=df_predictions)
 
-    # Realizar ajustes para crear el archivo submision
+    # Añadir las predicciones al DataFrame
     oot_data_merged['var_rpta_alt'] = predictions['prediction_label']
-    oot_data_merged['ID'] = df['nit_enmascarado'].astype(str) + '#' + df['num_oblig_orig_enmascarado'].astype(str) + '#' + df['num_oblig_enmascarado'].astype(str)
-    oot_data_merged = oot_data_merged[['ID', 'var_rpta_alt']].drop_duplicates()
-    oot_data_merged.to_csv('data_processed/submission.csv', index=False)
+
+    # Crear la columna 'ID'
+    oot_data_merged['ID'] = oot_data_merged['nit_enmascarado'].astype(str) + '#' + oot_data_merged['num_oblig_orig_enmascarado'].astype(str) + '#' + oot_data_merged['num_oblig_enmascarado'].astype(str)
+
+    # Guardar el archivo de submision
+    oot_data_merged[['ID', 'var_rpta_alt']].to_csv('data_processed/submission.csv', index=False)
 
 
 if __name__ == "__main__":
