@@ -2,3 +2,10 @@
 *.csv
 *.DS_Store
 *.xlsx
+
+# ignorar entornos virtuales de Python
+.env
+.venv
+ENV/
+env/
+venv/
