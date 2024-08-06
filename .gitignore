@@ -1,4 +1,4 @@
-# ignorar la data por seguridad
+# ignorar la data
 *.csv
 *.DS_Store
 *.xlsx
@@ -9,3 +9,6 @@
 ENV/
 env/
 venv/
+
+# ignorar modelos
+*pkl
