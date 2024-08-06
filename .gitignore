@@ -1,0 +1,4 @@
+# ignorar la data por seguridad
+*.csv
+*.DS_Store
+*.xlsx
